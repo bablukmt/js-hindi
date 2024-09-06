@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess Number Game</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Sora", system-ui;
+      font-size: 16px;
+      background-color: #000;
+      color: #ffffff;
+    }
+    .game {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .game__wrapper {
+      max-width: 500px;
+      text-align: center;
+      background-color: #ffffff;
+      color: #000000;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    #number {
+      padding: 10px;
+    }
+
+    .form-item {
+      margin-bottom: 10px;
+    }
+
+    #submit, #restart-btn {
+      background-color: orange;
+      color: #000000;
+      border: 0;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #restart-btn {
+      background-color: gray;
+    }
+
+    #prevGuess span {
+      background: #ff3737;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin: 2px;
+      font-size: 10px;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game">
+    <div class="game__wrapper">
+      <div class="game__description">
+        <p>Try to guess a random number between 1 to 100</p>
+        <p>You have 10 attempts to guess the right number.</p>
+      </div>
+      <h2>Enter your Number</h2>
+      <form>
+        <div class="form-item">
+          <input type="number" id="number">
+        </div>
+        <div class="form-item">
+          <p id="message"></p>
+        </div>
+        <div class="form-actions">
+          <input type="submit" value="Submit" id="submit">
+        </div>
+      </form>
+      <div class="results">
+        <p>Previous Guesses: <span id="prevGuess"></span></p>
+        <p>Remaining Guesses: <span id="remainGuess">10</span></p>
+        <p id="restart"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let randomNumber = parseInt(Math.random() * 100 + 1)
+
+    const submit = document.querySelector('#submit');
+    const number = document.querySelector('#number')
+    const prevGuess = document.querySelector('#prevGuess')
+    const remainGuess = document.querySelector('#remainGuess')
+    const message = document.querySelector('#message')
+    const restart = document.querySelector('#restart')
+
+    let prevGuessess = []
+    let remainGuessess = 1
+    let playGame = true
+
+    if(playGame) {
+      submit.addEventListener('click', function(e){
+        e.preventDefault()
+
+    console.log(randomNumber)
+        const getNumber = parseInt(number.value)
+        validateNumber(getNumber);
+      })
+    }
+
+    function validateNumber(getNumber) {
+      if(isNaN(getNumber) || getNumber < 1 || getNumber > 100) {
+        alert(`Please enter a valid number between 1 to 100`)
+      } else {
+        prevGuessess.push(getNumber)
+        if(remainGuessess === 11) {
+          message.innerHTML = `Game Over!! Try again ${randomNumber}`
+          gameEnd();
+        } else {
+          checkGuess(getNumber)
+        }
+      }
+    }
+
+    function checkGuess(getNumber) {
+      if(getNumber === randomNumber) {
+        message.innerHTML = 'Congratulations!! you won the game!!'
+        gameEnd()
+      } else {
+        message.innerHTML = `Opps! Try again!!`
+        number.value = ''
+        prevGuess.innerHTML += `<span>${getNumber}</span>`
+        remainGuessess++;
+        remainGuess.innerHTML = `${11 - remainGuessess}`
+      }
+    }
+
+    function gameEnd() {
+      number.value = ''
+      number.setAttribute('disabled', '')
+      submit.setAttribute('disabled', '')
+      restart.innerHTML = `<button id="restart-btn">Restart Again</button>`
+      playGame = false
+      startGame();
+    }
+
+    function startGame() {
+      const restartButton = document.querySelector('#restart-btn')
+      restartButton.addEventListener('click', function() {
+        randomNumber = parseInt(Math.random() * 100 + 1)
+        prevGuessess = []
+        remainGuessess = 1
+        restart.innerHTML = ''
+        message.innerHTML = ''
+        prevGuess.innerHTML = ''
+        number.removeAttribute('disabled')
+        submit.removeAttribute('disabled')
+        remainGuess.innerHTML = `${11 - remainGuessess}`
+      })
+    }
+
+  </script>
+</body>
+
+</html>
